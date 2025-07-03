@@ -1,69 +1,53 @@
 
-import React, { useState } from 'react';
+
+import React from 'react';
+import { Form, Input, InputNumber, Button, Typography } from 'antd';
 import styles from './CreateTestSubject.module.scss';
 
+
 const CreateTestSubject = () => {
-  const [form, setForm] = useState({
-    code: '',
-    duration: '',
-    questions: '',
-  });
+  const [form] = Form.useForm();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // You can handle form submission here
-    alert(`Test Subject Code: ${form.code}\nDuration: ${form.duration} minutes\nQuestions: ${form.questions}`);
+  const onFinish = (values) => {
+    alert(`Test Subject Code: ${values.code}\nDuration: ${values.duration} minutes\nQuestions: ${values.questions}`);
   };
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Create Test Subject</h2>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div>
-          <label className={styles.label} htmlFor="code">Test Subject Code</label>
-          <input
-            className={styles.input}
-            id="code"
-            name="code"
-            type="text"
-            value={form.code}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label className={styles.label} htmlFor="duration">Test Duration (minutes)</label>
-          <input
-            className={styles.input}
-            id="duration"
-            name="duration"
-            type="number"
-            min="1"
-            value={form.duration}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label className={styles.label} htmlFor="questions">Number of Questions</label>
-          <input
-            className={styles.input}
-            id="questions"
-            name="questions"
-            type="number"
-            min="1"
-            value={form.questions}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button className={styles.button} type="submit">Create</button>
-      </form>
+      <Typography.Title level={2} className={styles.title}>Create Test Subject</Typography.Title>
+      <Form
+        form={form}
+        layout="vertical"
+        className={styles.form}
+        onFinish={onFinish}
+      >
+        <Form.Item
+          label="Test Subject Code"
+          name="code"
+          rules={[{ required: true, message: 'Please input the test subject code!' }]}
+        >
+          <Input className={styles.input} />
+        </Form.Item>
+        <Form.Item
+          label="Test Duration (minutes)"
+          name="duration"
+          rules={[{ required: true, message: 'Please input the duration!' }]}
+        >
+          <InputNumber min={1} className={styles.input} style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item
+          label="Number of Questions"
+          name="questions"
+          rules={[{ required: true, message: 'Please input the number of questions!' }]}
+        >
+          <InputNumber min={1} className={styles.input} style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className={styles.button} block>
+            Create
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };
