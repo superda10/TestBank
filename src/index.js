@@ -8,6 +8,8 @@ import ImportQuestion from './pages/ImportQuestion';
 import CreateTestSubject from './pages/CreateTestSubject';
 import TestSubjectList from './pages/TestSubjectList';
 import Login from './pages/Login'; // .jsx extension is automatically resolved
+
+import TestPage from './pages/TestPage';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -24,6 +26,7 @@ root.render(
           <Route path="create-test-subject" element={<CreateTestSubject />} />
           <Route path="test-subject-list" element={<TestSubjectList />} />
         </Route>
+        <Route path="/test" element={<TestPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
