@@ -16,7 +16,7 @@ const testSubjects = [
 
 
 const handleTakeTest = (navigate, code) => {
-  navigate('/test', { state: { code } });
+  navigate(`/test?code=${encodeURIComponent(code)}`);
 };
 
 

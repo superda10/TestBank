@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, Typography, Button, Radio, Space, Divider, message } from 'antd';
 
 
@@ -32,9 +32,10 @@ const getDurationByCode = (code) => {
 };
 
 const TestPage = () => {
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
-  const { code } = location.state || {};
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get('code');
 
   // Timer logic
   const duration = getDurationByCode(code); // in minutes
