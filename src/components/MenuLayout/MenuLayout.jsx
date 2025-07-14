@@ -1,10 +1,10 @@
 
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Layout, Menu, Avatar, Button } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import styles from './MenuLayout.module.scss';
-// Use logo from public folder
+import apiTestBankWithToken from '../../service/apiTestBankWithToken';
 
 const { Header, Content, Sider } = Layout;
 
@@ -18,6 +18,16 @@ const MenuLayout = () => {
   const location = useLocation();
   // Find the matching menu key for the current path
   const selectedKey = items.find(item => location.pathname.startsWith(item.key))?.key || location.pathname;
+  const handleLogout = useCallback(async () => {
+    try {
+      await apiTestBankWithToken.post('/logout');
+    } catch (e) {
+      // ignore error, proceed to clear token
+    }
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }, []);
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider width={240} className={styles.sider}>
@@ -36,10 +46,7 @@ const MenuLayout = () => {
           </div>
           <div className={styles.userActions}>
             <Avatar style={{ backgroundColor: '#fff', color: '#6366f1', marginRight: 16 }} icon={<span style={{fontWeight:700}}>U</span>} />
-            <Button type="primary" danger onClick={() => {
-              localStorage.removeItem('token');
-              window.location.href = '/login';
-            }}>
+            <Button type="primary" danger onClick={handleLogout}>
               Logout
             </Button>
           </div>

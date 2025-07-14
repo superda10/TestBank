@@ -13,6 +13,13 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { App as AntdApp, ConfigProvider } from "antd";
 import { MessageProvider } from "./context/message";
+import useAuthRedirect from "./hooks/useAuthRedirect";
+
+
+function AuthRedirector() {
+  useAuthRedirect();
+  return null;
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,6 +28,7 @@ root.render(
       <AntdApp>
         <MessageProvider>
           <BrowserRouter>
+            <AuthRedirector />
             <Routes>
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<Login />} />
