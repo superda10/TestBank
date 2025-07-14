@@ -1,0 +1,3 @@
+export const APIS_TEST_BANK = {
+    login: '/authen/login',
+}

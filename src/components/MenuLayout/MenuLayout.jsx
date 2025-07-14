@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar, Button } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import styles from './MenuLayout.module.scss';
 // Use logo from public folder
@@ -33,6 +33,15 @@ const MenuLayout = () => {
           <div className={styles.logoTitleWrap}>
             <img src={process.env.PUBLIC_URL + '/testbank-icon.svg'} alt="Test Bank Logo" className={styles.logoImg} />
             <span className={styles.title}>Test Bank</span>
+          </div>
+          <div className={styles.userActions}>
+            <Avatar style={{ backgroundColor: '#fff', color: '#6366f1', marginRight: 16 }} icon={<span style={{fontWeight:700}}>U</span>} />
+            <Button type="primary" danger onClick={() => {
+              localStorage.removeItem('token');
+              window.location.href = '/login';
+            }}>
+              Logout
+            </Button>
           </div>
         </Header>
         <Content className={styles.content}>
