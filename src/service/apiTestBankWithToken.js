@@ -1,9 +1,8 @@
 import axios from "axios";
-import { APIS_TEST_BANK } from "../config";
 
 // Create an axios instance with token from localStorage
 const apiTestBankWithToken = axios.create({
-  baseURL: APIS_TEST_BANK.baseUrl || "/", // fallback if not set
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000', // fallback if not set
 });
 
 // Add a request interceptor to include token
