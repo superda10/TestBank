@@ -32,7 +32,7 @@ root.render(
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/app" element={<MenuLayout />}>
-                <Route index element={<App />} />
+                {/* <Route index element={<App />} /> */}
                 <Route path="import-question" element={<ImportQuestion />} />
                 <Route
                   path="create-test-subject"

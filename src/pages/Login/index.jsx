@@ -20,6 +20,7 @@ const Login = () => {
         if (res?.status === 200) {
           message.success(`Logged in successfully as ${values?.username}`);
           localStorage.setItem("token", res?.data?.access_token);
+          localStorage.setItem("isStudent", res?.data?.message?.loginData?.isStudent);
           navigate("/app", { replace: true });
         } else {
           message.error(res?.detail || "Login failed");

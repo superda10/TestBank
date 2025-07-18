@@ -5,10 +5,11 @@ import styles from "./MenuLayout.module.scss";
 import apiTestBankWithToken from "../../service/apiTestBankWithToken";
 import { APIS_TEST_BANK } from "../../config";
 import { useGlobalMessage } from "../../context/message";
+import useIsStudent from "../../hooks/useIsStudent";
 
 const { Header, Content, Sider } = Layout;
 
-const items = [
+const allItems = [
   {
     key: "/app/import-question",
     label: <Link to="/app/import-question">Import Question</Link>,
@@ -24,8 +25,12 @@ const items = [
 ];
 
 const MenuLayout = () => {
+  const isStudent = useIsStudent();
   const message = useGlobalMessage();
   const location = useLocation();
+  const items = isStudent
+    ? allItems.filter((item) => item.key === "/app/test-subject-list")
+    : allItems.filter((item) => item.key !== "/app/test-subject-list");
   // Find the matching menu key for the current path
   const selectedKey =
     items.find((item) => location.pathname.startsWith(item.key))?.key ||
@@ -40,6 +45,7 @@ const MenuLayout = () => {
       );
     }
     localStorage.removeItem("token");
+    localStorage.removeItem("isStudent");
     window.location.href = "/login";
   }, [message]);
 
