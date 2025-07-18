@@ -15,7 +15,6 @@ import { App as AntdApp, ConfigProvider } from "antd";
 import { MessageProvider } from "./context/message";
 import useAuthRedirect from "./hooks/useAuthRedirect";
 
-
 function AuthRedirector() {
   useAuthRedirect();
   return null;

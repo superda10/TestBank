@@ -11,22 +11,29 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = useCallback(async (values) => {
-    setLoading(true);
-    try {
-      const res = await apiTestBank.post(APIS_TEST_BANK.login, values);
-      // Handle redirect or token storage here if needed
-      if (res?.status === 200) {
-        message.success(`Logged in successfully as ${values?.username}`);
-        localStorage.setItem("token", res?.data?.access_token);
-        navigate("/app", { replace: true });
+  const onFinish = useCallback(
+    async (values) => {
+      setLoading(true);
+      try {
+        const res = await apiTestBank.post(APIS_TEST_BANK.login, values);
+        // Handle redirect or token storage here if needed
+        if (res?.status === 200) {
+          message.success(`Logged in successfully as ${values?.username}`);
+          localStorage.setItem("token", res?.data?.access_token);
+          navigate("/app", { replace: true });
+        } else {
+          message.error(res?.detail || "Login failed");
+        }
+      } catch (error) {
+        message.error(
+          error?.response?.data?.detail || error?.message || "Login failed"
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      message.error(error?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  }, [message, navigate]);
+    },
+    [message, navigate]
+  );
 
   return (
     <div className={styles.loginBg}>

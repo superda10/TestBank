@@ -51,10 +51,9 @@ const ImportQuestion = () => {
       message.success("File uploaded successfully!");
       setFileList([]);
     } catch (error) {
-      message.error(error?.response?.data?.message || "Upload failed!");
+      message.error(error?.response?.data?.detail || "Upload failed!");
     }
   }, [fileList, message]);
-  console.log(fileList,'shit');
 
   return (
     <div className={styles.container}>
