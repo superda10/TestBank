@@ -26,7 +26,8 @@ const CreateTestSubject = () => {
           mark: values?.total_question,
           total_questions: values?.total_question,
         });
-        if (res?.status === 200) {
+        if (res?.status === 201) {
+          message.success(res?.data?.message || "Create successfully!");
         } else {
           message.error(res?.message || "Failed");
         }
