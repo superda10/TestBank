@@ -13,10 +13,10 @@ const PopupSubmitTest = ({ open, result, onOk, setOpen }) => {
       centered
     >
       <Typography.Title level={3} style={{ textAlign: "center" }}>
-        {result?.score}%
+        {result?.score} Points
       </Typography.Title>
       <Typography.Paragraph style={{ textAlign: "center" }}>
-        You answered {result?.score === null ? 0 : Math.round((result?.score / 100) * result?.max_score)} out of {result?.max_score} questions correctly.
+        You answered {result?.score} out of {result?.max_score} questions correctly.
       </Typography.Paragraph>
     </Modal>
   );

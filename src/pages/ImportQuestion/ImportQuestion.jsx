@@ -51,7 +51,7 @@ const ImportQuestion = () => {
       message.success("File uploaded successfully!");
       setFileList([]);
     } catch (error) {
-      message.error(error?.response?.data?.detail || "Upload failed!");
+      message.error(error?.response?.data?.detail?.message || error?.message || "Upload failed!");
     }
   }, [fileList, message]);
 

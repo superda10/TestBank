@@ -64,15 +64,34 @@ const TestPage = () => {
 
   const today = useMemo(() => new Date().toLocaleDateString(), []);
 
-  const handleChange = useCallback((qid, value) => {
+  const handleChange = useCallback((qid, value, multiChoice = false) => {
     setAnswers((prev) => {
-      const idx = prev.findIndex((a) => a.quetion_id === qid);
-      if (idx > -1) {
-        const updated = [...prev];
-        updated[idx] = { quetion_id: qid, answer: value };
-        return updated;
+      const idx = prev.findIndex((a) => a.question_id === qid);
+      if (multiChoice) {
+        let newAnswerArr = [];
+        if (idx > -1) {
+          // Toggle value in array
+          const currentArr = Array.isArray(prev[idx].answer) ? prev[idx].answer : [];
+          if (currentArr.includes(value)) {
+            newAnswerArr = currentArr.filter((v) => v !== value);
+          } else {
+            newAnswerArr = [...currentArr, value];
+          }
+          const updated = [...prev];
+          updated[idx] = { question_id: qid, answer: newAnswerArr };
+          return updated;
+        } else {
+          return [...prev, { question_id: qid, answer: [value] }];
+        }
       } else {
-        return [...prev, { quetion_id: qid, answer: value }];
+        // Always save as array for single choice
+        if (idx > -1) {
+          const updated = [...prev];
+          updated[idx] = { question_id: qid, answer: [value] };
+          return updated;
+        } else {
+          return [...prev, { question_id: qid, answer: [value] }];
+        }
       }
     });
   }, []);
@@ -125,7 +144,7 @@ const TestPage = () => {
     () =>
       examDetail?.questions?.map((q, idx) => (
         <div key={q?.question_id} style={{ marginBottom: 24 }}>
-          <Typography.Text strong>Question {idx + 1}:</Typography.Text>
+          <Typography.Text strong>Question {idx + 1}:{q?.multi_choice && ' (Multiple choices)'}</Typography.Text>
           <Typography.Paragraph style={{ marginBottom: 8 }}>
             {q?.content}
           </Typography.Paragraph>
@@ -138,24 +157,44 @@ const TestPage = () => {
               />
             </div>
           )}
-          <Radio.Group
-            onChange={(e) => handleChange(q?.question_id, e.target.value)}
-            value={(() => {
-              const found = answers.find((a) => a.quetion_id === q.question_id);
-              return typeof found?.answer !== "undefined"
-                ? found.answer
-                : undefined;
-            })()}
-            style={{ display: "block" }}
-          >
+          {q?.multi_choice ? (
             <Space direction="vertical">
-              {q?.answer?.map((choice, i) => (
-                <Radio key={i} value={i}>
-                  {choice}
-                </Radio>
-              ))}
+              {q?.answer?.map((choice, i) => {
+                const found = answers.find((a) => a.question_id === q.question_id);
+                const checked = Array.isArray(found?.answer) && found.answer.includes(i);
+                return (
+                  <label key={i} style={{ display: "flex", alignItems: "center" }}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => handleChange(q?.question_id, i, true)}
+                      style={{ marginRight: 8 }}
+                    />
+                    {choice}
+                  </label>
+                );
+              })}
             </Space>
-          </Radio.Group>
+          ) : (
+            <Radio.Group
+              onChange={(e) => handleChange(q?.question_id, e.target.value)}
+              value={(() => {
+                const found = answers.find((a) => a.question_id === q.question_id);
+                return Array.isArray(found?.answer) && found.answer.length > 0
+                  ? found.answer[0]
+                  : undefined;
+              })()}
+              style={{ display: "block" }}
+            >
+              <Space direction="vertical">
+                {q?.answer?.map((choice, i) => (
+                  <Radio key={i} value={i}>
+                    {choice}
+                  </Radio>
+                ))}
+              </Space>
+            </Radio.Group>
+          )}
         </div>
       )),
     [examDetail?.questions, answers, handleChange]
