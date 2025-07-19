@@ -1,20 +1,51 @@
-
-
-import React from 'react';
-import { Form, Input, InputNumber, Button, Typography } from 'antd';
-import styles from './CreateTestSubject.module.scss';
-
+import React, { useCallback, useState } from "react";
+import { Form, Input, InputNumber, Button, Typography, DatePicker } from "antd";
+import styles from "./CreateTestSubject.module.scss";
+import { useGlobalMessage } from "../../context/message";
+import apiTestBankWithToken from "../../service/apiTestBankWithToken";
+import { APIS_TEST_BANK } from "../../config";
 
 const CreateTestSubject = () => {
   const [form] = Form.useForm();
+  const message = useGlobalMessage();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    alert(`Test Subject Code: ${values.code}\nDuration: ${values.duration} minutes\nQuestions: ${values.questions}`);
-  };
+  const onFinish = useCallback(
+    async (values) => {
+      setLoading(true);
+      try {
+        const res = await apiTestBankWithToken.post(APIS_TEST_BANK.createExam, {
+          subject_id: values?.subject_id,
+          title: values?.title,
+          total_question: values?.total_question,
+          total_time: values?.total_time,
+          start_time: values?.start_time,
+          end_time: values?.end_time,
+          createdBy: 0,
+          isDeleted: false,
+          mark: values?.total_question,
+          total_questions: values?.total_question,
+        });
+        if (res?.status === 200) {
+        } else {
+          message.error(res?.message || "Failed");
+        }
+      } catch (error) {
+        message.error(
+          error?.response?.data?.detail || error?.message || "Failed"
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [message]
+  );
 
   return (
     <div className={styles.container}>
-      <Typography.Title level={2} className={styles.title}>Create Test Subject</Typography.Title>
+      <Typography.Title level={2} className={styles.title}>
+        Create Test Subject
+      </Typography.Title>
       <Form
         form={form}
         layout="vertical"
@@ -23,27 +54,81 @@ const CreateTestSubject = () => {
       >
         <Form.Item
           label="Test Subject Code"
-          name="code"
-          rules={[{ required: true, message: 'Please input the test subject code!' }]}
+          name="subject_id"
+          rules={[
+            { required: true, message: "Please input the test subject code!" },
+          ]}
         >
           <Input className={styles.input} />
         </Form.Item>
         <Form.Item
-          label="Test Duration (minutes)"
-          name="duration"
-          rules={[{ required: true, message: 'Please input the duration!' }]}
+          label="Exam Title"
+          name="title"
+          rules={[{ required: true, message: "Please input the exam title!" }]}
         >
-          <InputNumber min={1} className={styles.input} style={{ width: '100%' }} />
+          <Input className={styles.input} />
+        </Form.Item>
+        <Form.Item
+          label="Start Time"
+          name="start_time"
+          rules={[{ required: true, message: "Please input the start time!" }]}
+        >
+          <DatePicker
+            showTime
+            className={styles.input}
+            style={{ width: "100%" }}
+            format="YYYY-MM-DD HH:mm"
+            placeholder="Select start time"
+          />
+        </Form.Item>
+        <Form.Item
+          label="End Time"
+          name="end_time"
+          rules={[{ required: true, message: "Please input the end time!" }]}
+        >
+          <DatePicker
+            showTime
+            className={styles.input}
+            style={{ width: "100%" }}
+            format="YYYY-MM-DD HH:mm"
+            placeholder="Select end time"
+          />
+        </Form.Item>
+        <Form.Item
+          label="Test Duration (minutes)"
+          name="total_time"
+          rules={[{ required: true, message: "Please input the duration!" }]}
+        >
+          <InputNumber
+            min={1}
+            className={styles.input}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
         <Form.Item
           label="Number of Questions"
-          name="questions"
-          rules={[{ required: true, message: 'Please input the number of questions!' }]}
+          name="total_question"
+          rules={[
+            {
+              required: true,
+              message: "Please input the number of questions!",
+            },
+          ]}
         >
-          <InputNumber min={1} className={styles.input} style={{ width: '100%' }} />
+          <InputNumber
+            min={1}
+            className={styles.input}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" className={styles.button} block>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.button}
+            block
+            loading={loading}
+          >
             Create
           </Button>
         </Form.Item>
